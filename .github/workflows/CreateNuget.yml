@@ -1,0 +1,47 @@
+name: Build and Pack NuGet Packages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --configuration Release
+
+    - name: Extract Version
+      id: extract_version
+      run: echo "version=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+
+    - name: Pack SerialCommands
+      run: dotnet pack SerialCommands/SerialCommands.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+
+    - name: Pack SerialCommands.DependencyInjection
+      run: dotnet pack SerialCommands.DependencyInjection/SerialCommands.DependencyInjection.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+
+    - name: Upload NuGet packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: nupkgs
+
+    # Uncomment the following lines to publish packages to NuGet.org
+    - name: Publish NuGet packages
+      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
+
+    # Uncomment to publish symbol packages to NuGet.org
+    - name: Publish symbol packages
+      run: dotnet nuget push nupkgs/*.snupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
