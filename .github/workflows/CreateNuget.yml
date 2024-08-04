@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+env:
+  NugetDirectory: ${{ github.workspace }}/nuget
+  PackageVersion: ${{ github.event.release.tag_name }}
+
 jobs:
   build:
     runs-on: windows-latest
@@ -29,23 +33,24 @@ jobs:
       run: echo "version=${github.event.release.tag_name}" >> $GITHUB_ENV
 
     - name: Pack SerialCommands
-      run: dotnet pack SerialCommands.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ github.event.release.tag_name }} /p:SymbolPackageFormat=snupkg
+      run: dotnet pack SerialCommands.csproj --configuration Release --output ${{ env.NugetDirectory }} /p:PackageVersion=${{ env.PackageVersion }} /p:SymbolPackageFormat=snupkg
       working-directory: ./Source/SerialCommands
 
     - name: Pack SerialCommands.DependencyInjection
-      run: dotnet pack SerialCommands.DependencyInjection.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ github.event.release.tag_name }} /p:SymbolPackageFormat=snupkg
+      run: dotnet pack SerialCommands.DependencyInjection.csproj --configuration Release --output  ${{ env.NugetDirectory }} /p:PackageVersion=${{ github.event.release.tag_name }} /p:SymbolPackageFormat=snupkg
       working-directory: ./Source/SerialCommands.DependencyInjection
 
     - name: Upload NuGet packages
       uses: actions/upload-artifact@v2
       with:
         name: nuget-packages
-        path: nupkgs
+        retention-days: 7
+        path:  ${{ env.NugetDirectory }}
 
     # Uncomment the following lines to publish packages to NuGet.org
     - name: Publish NuGet packages
-      run: dotnet nuget push nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push  ${{ env.NugetDirectory }}/*.nupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
 
     # Uncomment to publish symbol packages to NuGet.org
     - name: Publish symbol packages
-      run: dotnet nuget push nupkgs/*.snupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push  ${{ env.NugetDirectory }}/*.snupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
