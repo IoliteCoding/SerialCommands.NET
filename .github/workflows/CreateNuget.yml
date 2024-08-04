@@ -45,12 +45,15 @@ jobs:
       with:
         name: nuget-packages
         retention-days: 7
-        path:  ${{ env.NugetDirectory }}
+        path:  ${{ env.NugetDirectory }}/*.nupkg
 
-    # Uncomment the following lines to publish packages to NuGet.org
     - name: Publish NuGet packages
-      run: dotnet nuget push  ${{ env.NugetDirectory }}/*.nupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
-
-    # Uncomment to publish symbol packages to NuGet.org
+      run: |
+          foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.nupkg)) {
+              dotnet nuget push $file --api-key "${{ secrets.NUGET_API }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          }
     - name: Publish symbol packages
-      run: dotnet nuget push  ${{ env.NugetDirectory }}/*.snupkg --api-key ${{ secrets.NUGET_API }} --source https://api.nuget.org/v3/index.json
+      run: |
+          foreach($file in (Get-ChildItem "${{ env.NuGetDirectory }}" -Recurse -Include *.snupkg)) {
+              dotnet nuget push $file --api-key "${{ secrets.NUGET_API }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+          }
