@@ -29,11 +29,11 @@ jobs:
       run: echo "version=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
 
     - name: Pack SerialCommands
-      run: dotnet pack SerialCommands/SerialCommands.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+      run: dotnet pack SerialCommands.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
       working-directory: ./Source/SerialCommands
 
     - name: Pack SerialCommands.DependencyInjection
-      run: dotnet pack SerialCommands.DependencyInjection/SerialCommands.DependencyInjection.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+      run: dotnet pack SerialCommands.DependencyInjection.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
       working-directory: ./Source/SerialCommands.DependencyInjection
 
     - name: Upload NuGet packages
