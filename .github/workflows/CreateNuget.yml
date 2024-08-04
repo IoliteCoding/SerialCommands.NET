@@ -17,10 +17,12 @@ jobs:
         dotnet-version: '6.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore SerialCommands.sln
+      working-directory: ./Source
 
     - name: Build solution
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release SerialCommands.sln
+      working-directory: ./Source
 
     - name: Extract Version
       id: extract_version
@@ -28,9 +30,11 @@ jobs:
 
     - name: Pack SerialCommands
       run: dotnet pack SerialCommands/SerialCommands.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+      working-directory: ./Source/SerialCommands
 
     - name: Pack SerialCommands.DependencyInjection
       run: dotnet pack SerialCommands.DependencyInjection/SerialCommands.DependencyInjection.csproj --configuration Release --output nupkgs /p:PackageVersion=${{ env.version }} /p:SymbolPackageFormat=snupkg
+      working-directory: ./Source/SerialCommands.DependencyInjection
 
     - name: Upload NuGet packages
       uses: actions/upload-artifact@v2
