@@ -22,4 +22,4 @@ The primary goal of the `SerialCommands` library is to simplify the process of i
 
 ## Additional Resources
 
-In addition to the `SerialCommands` library, there is a companion Arduino that works seamlessly with this .NET library. For Arduino, visit the [IoliteCoding_SerialCommands repository]([https://github.com/IoliteCoding/SerialCommands.NET](https://github.com/IoliteCoding/IoliteCoding_SerialCommands)).
+In addition to the `SerialCommands` library, there is a companion Arduino that works seamlessly with this .NET library. For Arduino, visit the [IoliteCoding_SerialCommands repository](https://github.com/IoliteCoding/IoliteCoding_SerialCommands).
