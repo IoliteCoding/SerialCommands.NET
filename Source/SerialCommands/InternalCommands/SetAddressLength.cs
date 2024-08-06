@@ -1,4 +1,5 @@
 ﻿using IoliteCoding.SerialCommands.Abstraction;
+using IoliteCoding.SerialCommands.Models;
 
 namespace IoliteCoding.SerialCommands.InternalCommands
 {
@@ -20,14 +21,13 @@ namespace IoliteCoding.SerialCommands.InternalCommands
         {
             if (address == Address && data != null && data.Length > 0)
             {
-
                 _encryptor.AddressLength = data[0];
             }
         }
 
-        public override bool Write(ICommandWriter serialWriter)
+        public override bool Write(ICommandWriter serialWriter, EncryptorOptions? encryptorOptions = null)
         {
-            return serialWriter.Write(Address, new byte[] { (byte)_encryptor.AddressLength });
+            return serialWriter.Write(Address, new byte[] { (byte)_encryptor.AddressLength },encryptorOptions);
         }
     }
 }

@@ -3,6 +3,7 @@ using IoliteCoding.SerialCommands.Models;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace IoliteCoding.SerialCommands
             _encryptor = encryptor;
         }
 
-        public bool TryStart()
+        public virtual bool TryStart()
         {
             if (_thread != null && _thread.IsAlive)
             {
@@ -98,7 +99,7 @@ namespace IoliteCoding.SerialCommands
             }
         }
 
-        private void TryProcessBuffer(byte[] buffer)
+        private  void TryProcessBuffer(byte[] buffer)
         {
             Task.Run(() =>
             {
@@ -130,20 +131,19 @@ namespace IoliteCoding.SerialCommands
         }
 
 
-        public bool TryStop()
+        public virtual bool TryStop()
         {
             _cancellationTokenSource?.Cancel();
             return true;
 
         }
 
-        public bool Write(int address, byte[] bytes)
+        public virtual bool Write(byte[] buffer, int offset, int count)
         {
             if (Stream == null) return false;
             try
             {
-                byte[] message = _encryptor.Encode(address, bytes ?? new byte[] { });
-                Stream.Write(message, 0, message.Length);
+                Stream.Write(buffer, offset, buffer.Length);
                 Stream.Flush();
                 return true;
             }
@@ -153,15 +153,29 @@ namespace IoliteCoding.SerialCommands
             return false;
         }
 
-        public bool Write(int address, byte[] bytes, EncryptorOptions encryptorOptions)
+        public virtual bool Write(int address, byte[] bytes)
         {
             if (Stream == null) return false;
             try
             {
+                byte[] message = _encryptor.Encode(address, bytes ?? new byte[] { });
+                return Write(message, 0, message.Length);
+            }
+            catch (Exception)
+            {
+            }
+            return false;
+        }
+
+        public virtual bool Write(int address, byte[] bytes, EncryptorOptions encryptorOptions)
+        {
+            if (encryptorOptions == null) return Write(address, bytes);
+
+            if (Stream == null) return false;
+            try
+            {
                 byte[] message = _encryptor.Encode(address, bytes ?? new byte[] { }, encryptorOptions);
-                Stream.Write(message, 0, message.Length);
-                Stream.Flush();
-                return true;
+                return Write(message, 0, message.Length);
             }
             catch (Exception)
             {

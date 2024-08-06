@@ -1,5 +1,6 @@
 ﻿using IoliteCoding.SerialCommands.Abstraction;
 using IoliteCoding.SerialCommands.Delegates;
+using IoliteCoding.SerialCommands.Models;
 
 namespace IoliteCoding.SerialCommands.InternalCommands
 {
@@ -17,7 +18,7 @@ namespace IoliteCoding.SerialCommands.InternalCommands
 
         public abstract void Execute(int address, byte[] data);
 
-        public abstract bool Write(ICommandWriter serialWriter);
+        public abstract bool Write(ICommandWriter serialWriter,EncryptorOptions? encryptorOptions=null);
 
     }
 }

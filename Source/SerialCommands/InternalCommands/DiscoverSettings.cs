@@ -3,30 +3,30 @@ using IoliteCoding.SerialCommands.Models;
 
 namespace IoliteCoding.SerialCommands.InternalCommands
 {
-    internal class SetAddressFactor : SerialCommandBase
+    internal class DiscoverSettings : SerialCommandBase
     {
-        public const byte Address = 0x01;
-
-        private readonly ICommandEncryptor _encryptor;
+        private ICommandEncryptor _encryptor;
 
         public override bool CanWrite => true;
 
-        public SetAddressFactor(ICommandEncryptor encryptor) : base()
+        public DiscoverSettings()
+        {
+        }
+
+        public DiscoverSettings(ICommandEncryptor encryptor)
         {
             _encryptor = encryptor;
         }
 
         public override void Execute(int address, byte[] data)
         {
-            if (address == Address && data != null && data[0] > 0)
-            {
-                _encryptor.AddressFactor = data[0];
-            }
         }
 
         public override bool Write(ICommandWriter serialWriter, EncryptorOptions? encryptorOptions = null)
         {
-            return serialWriter.Write(Address, new byte[] { (byte)_encryptor.AddressFactor });
+            bool success = new SetAddressFactor(_encryptor).Write(serialWriter, EncryptorOptions.DefaultOptions);
+            success &= new SetAddressLength(_encryptor).Write(serialWriter, EncryptorOptions.DefaultOptions);
+            return success;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using IoliteCoding.SerialCommands.Delegates;
+using IoliteCoding.SerialCommands.Models;
 
 namespace IoliteCoding.SerialCommands.Abstraction
 {
@@ -10,6 +11,6 @@ namespace IoliteCoding.SerialCommands.Abstraction
 
         void Execute(int address, byte[] date);
 
-        bool Write(ICommandWriter serialWriter);
+        bool Write(ICommandWriter serialWriter, EncryptorOptions? encryptorOptions = null);
     }
 }

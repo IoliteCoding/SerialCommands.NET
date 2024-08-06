@@ -10,6 +10,8 @@ namespace IoliteCoding.SerialCommands.Abstraction
 
         Action<Exception> ExceptionHandler { get; set; }
 
+        bool Write(byte[] buffer, int offset, int count);
+
         bool Write(int address, byte[] bytes);
 
         bool Write(int address, byte[] bytes, EncryptorOptions encryptorOptions);

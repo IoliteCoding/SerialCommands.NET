@@ -42,6 +42,9 @@ namespace IoliteCoding.SerialCommands
             return !_streamManager.TryStop();
         }
 
+        public bool Write(byte[] buffer, int offset, int count)
+            => _streamManager.Write(buffer, offset, count);
+
         public bool Write(int address, byte[] bytes)
         {
             return _streamManager.Write(address, bytes);

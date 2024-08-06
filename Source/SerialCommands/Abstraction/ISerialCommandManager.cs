@@ -19,5 +19,6 @@ namespace IoliteCoding.SerialCommands.Abstraction
         void AddCommand(int address, CommandDelegate command);
         void RemoveCommand(int address);
         bool TryExecuteCommand(byte[] data);
+       // bool TryGetCommand(int v, out ISerialCommand setAddressLengthCommand);
     }
 }

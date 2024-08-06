@@ -6,6 +6,7 @@ using IoliteCoding.SerialCommands.Models;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace IoliteCoding.SerialCommands
@@ -96,9 +97,27 @@ namespace IoliteCoding.SerialCommands
             _commands.TryRemove(address, out CommandDelegateHolder holder);
         }
 
+        //public bool TryGetCommand(int address,out ISerialCommand serialCommand)
+        //{
+        //    if (_disposedValue) throw new ObjectDisposedException(nameof(CommandsManager));
+
+        //    if( _commands.TryGetValue(address,out var commandDelegateHolder))
+        //    {
+        //        //serialCommand=commandDelegateHolder.Command;
+        //        return true;
+        //    }
+        //    return false;
+        //}
+
         public bool TryExecuteCommand(byte[] data)
         {
             if (_disposedValue) throw new ObjectDisposedException(nameof(CommandsManager));
+
+            if (data.SequenceEqual(new byte[] { 0xFE, 0x00, 0xFF }))
+            {
+                // Discover: send current settings to the sender
+                return new DiscoverSettings(_encryptor).Write(_commandWriter);
+            }
 
             var result = _encryptor.Decode(data);
 
