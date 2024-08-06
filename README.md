@@ -22,4 +22,10 @@ The primary goal of the `SerialCommands` library is to simplify the process of i
 
 ## Additional Resources
 
-In addition to the `SerialCommands` library, there is a companion Arduino that works seamlessly with this .NET library. For Arduino, visit the [IoliteCoding_SerialCommands repository](https://github.com/IoliteCoding/IoliteCoding_SerialCommands).
+This library is availabele as a nuget package:
+- **[IoliteCoding.SerialCommands](https://www.nuget.org/packages/IoliteCoding.SerialCommands/)**: a library with all the core logic.
+- **[IoliteCoding.SerialCommands.DependencyInjection](https://www.nuget.org/packages/IoliteCoding.SerialCommands.DependencyInjection/)**: Support for dependency injection.
+
+In addition to the `SerialCommands` library, there is a companion Arduino library that works seamlessly with this .NET library. For Arduino, visit the [IoliteCoding_SerialCommands repository](https://github.com/IoliteCoding/IoliteCoding_SerialCommands).
+
+For detailed documentation and usage examples, please refer to the [Wiki](https://github.com/IoliteCoding/SerialCommands.NET/wiki).
